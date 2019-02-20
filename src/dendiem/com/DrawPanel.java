@@ -46,12 +46,18 @@ public class DrawPanel extends JPanel {
             dot = dotArr.get(i);
             dx=dot.getX();
             dy=dot.getY();
-            addDot(myClasses.get(dot.getdClass()-1).getColor(),dx,dy);
+
             if(i==dotArr.size()-1){
 
+                dot = currentDot;
+                dx=dot.getX();
+                dy=dot.getY();
+                addDot(myClasses.get(dot.getdClass()-1).getColor(),dx,dy);
                 if(grid){
                     drawFocus(dx,dy);
                 }
+            }else{
+                addDot(myClasses.get(dot.getdClass()-1).getColor(),dx,dy);
             }
 
         }

@@ -143,10 +143,31 @@ public class FloFrame extends JFrame{
                         ++right;
                 }
 
+
+               /* boolean remember = dotAdd;
+                dotAdd=false;
+                int right2 = 0;
+                for (in) {
+                    x=myDot.getX();
+                    y=myDot.getY();
+                    copy = new Dot(x,y);
+                    copy.choiceClass();
+
+                    currentDot = new Dot(x,y);
+                    if(NN){
+                        progNN(currentDot,k);
+                    }else{
+                        progParsen(currentDot,k);
+
+                    }
+                    if(copy.getdClass()==currentDot.getdClass())
+                        ++right2;
+                }
+                dotAdd=remember;*/
                 drawPanel.repaint();
                 rightPanel.repaint();
                 System.out.println("Right: " + right);
-                infoBox("Right: " + right+"/"+n,"[OutPut]");
+                infoBox("Right: " + right+"/"+n/*+"\n Test on own, Right: " + right2+"/"+dotArr.size()*/,"[OutPut]");
 
 
             }
@@ -228,7 +249,7 @@ public class FloFrame extends JFrame{
 
     }
     static void choiseClassForDot(){
-        myClasses.sort((o1, o2) ->(int)(o2.getSumWeight()-o1.getSumWeight()));
+        myClasses.sort((o1, o2) ->(int)(o2.getSumWeight()*1000-o1.getSumWeight()*1000));
         currentDot.setdClass(myClasses.get(0).getdClass());
         System.out.println(Arrays.toString(myClasses.toArray()));
         myClasses.sort((o1, o2) ->(int)(o1.getdClass()-o2.getdClass()));
