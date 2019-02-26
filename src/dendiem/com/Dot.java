@@ -73,12 +73,7 @@ public class Dot implements Comparable<Dot>{
         return (int)(distance - o.distance);
     }
 
-    @Override
-    public String toString() {
-        return "Dot{" +
-                "distance=" + distance +
-                '}';
-    }
+
 
     public void choiceClass(){
         if(x>400&&y>400){
@@ -108,5 +103,10 @@ public class Dot implements Comparable<Dot>{
             dClass=1;
 
         }
+    }
+
+    @Override
+    public String toString() {
+        return "{" +  "x=" + x +  ", y = "+y+", class=" + dClass + ", dist=" + distance + '}';
     }
 }

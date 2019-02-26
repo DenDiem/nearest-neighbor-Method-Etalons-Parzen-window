@@ -25,7 +25,9 @@ public class MyClass {
     public double getSumWeight() {
         return sumWeight;
     }
-
+    public void setJustWeight(double sumWeight) {
+        this.sumWeight = sumWeight;
+    }
     public void setSumWeight(double sumWeight) {
         this.sumWeight += sumWeight;
     }

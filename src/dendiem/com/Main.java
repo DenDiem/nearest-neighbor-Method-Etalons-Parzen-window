@@ -1,13 +1,52 @@
 package dendiem.com;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
-import static dendiem.com.FloFrame.dotArr;
-import static dendiem.com.FloFrame.myClasses;
+import static dendiem.com.FloFrame.*;
 
 public class Main {
+    public static void initEtalon(){
+        ArrayList<Dot> worklist = new ArrayList<>();
+        int mindistance = Integer.MAX_VALUE;
+        int[] arr = new int[3];
+        int sumdistanse = 0;
+        for(int i = 0; i<9; ++i) {
+            for (Dot curr : dotArr
+            ) {
+                if (curr.getdClass() == i + 1) {
+                    worklist.add(curr);
+                }
 
+            }
+            if (!worklist.isEmpty()) {
+                for (Dot curr : worklist
+                ) {
+                    for (Dot dot : worklist) {
+
+                        sumdistanse += Dot.distance(dot, curr);
+                    }
+                    if (sumdistanse < mindistance) {
+                        mindistance = sumdistanse;
+                        arr[0] = curr.getX();
+                        arr[1] = curr.getY();
+                        arr[2] = curr.getdClass();
+                    }
+                    sumdistanse = 0;
+                }
+                worklist.clear();
+                etalonArr.add(new Dot(arr[0], arr[1], arr[2]));
+                mindistance = Integer.MAX_VALUE;
+                sumdistanse = 0;
+            }
+            worklist.clear();
+            mindistance = Integer.MAX_VALUE;
+            sumdistanse = 0;
+        }
+
+    }
     public static void main(String[] args) {
         Random rand = new Random();
 
@@ -21,6 +60,7 @@ public class Main {
             dotArr.add(dot);
         }
 
+        initEtalon();
 
         myClasses.add(new MyClass(1,new Color(255, 0, 0)));
         myClasses.add(new MyClass(2,new Color(0, 255, 0)));
@@ -34,7 +74,19 @@ public class Main {
 
         FloFrame frame = new FloFrame();
 
+        System.out.println(Arrays.toString(etalonArr.toArray()));
 
 
+        ArrayList<Integer> al = new ArrayList<Integer>();
+        al.add(1);
+        al.add(2);
+        al.add(3);
+        ArrayList<Integer> al2 = new ArrayList<Integer>(al);
+        al.remove(0);
+        al = new ArrayList<>(al2);
+        al.remove(0);
+        al = new ArrayList<>(al2);
+        System.out.println(Arrays.toString(al.toArray()));
+        System.out.println(Arrays.toString(al2.toArray()));
     }
 }

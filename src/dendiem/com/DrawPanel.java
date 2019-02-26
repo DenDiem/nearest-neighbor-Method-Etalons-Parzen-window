@@ -17,7 +17,7 @@ public class DrawPanel extends JPanel {
     private int height;
     private int width;
     private Graphics graphics;
-    final static private int DOT_DIAMETR = 10;
+    static private int DOT_DIAMETR = 10;
     public DrawPanel() {
         setBackground(Color.WHITE);
 
@@ -64,6 +64,15 @@ public class DrawPanel extends JPanel {
         if (FloFrame.grid){
             drawGrid();
         }
+        DOT_DIAMETR = 16;
+        for (int i=0;i<etalonArr.size();++i) {
+            dot = etalonArr.get(i);
+            dx = dot.getX();
+            dy = dot.getY();
+            addDot(myClasses.get(dot.getdClass()-1).getColor(),dx,dy);
+            drowX(dx,dy);
+        }
+        DOT_DIAMETR = 10;
     }
     private void drawFocus(int x,int y){
         Graphics2D g2 = (Graphics2D) graphics;
@@ -84,6 +93,14 @@ public class DrawPanel extends JPanel {
           Ellipse2D.Double circle = new Ellipse2D.Double(x-DOT_DIAMETR/2,y-DOT_DIAMETR/2,DOT_DIAMETR,DOT_DIAMETR);
           g2d.fill(circle);
           //graphics.drawOval(x-DOT_DIAMETR/2,y-DOT_DIAMETR/2,DOT_DIAMETR,DOT_DIAMETR);
+      }
+
+      private void drowX(int x, int y){
+          Graphics2D g2 = (Graphics2D) graphics;
+          g2.setStroke(new BasicStroke(2));
+          g2.setColor(Color.WHITE);
+          g2.draw(new Line2D.Float(x-DOT_DIAMETR/2 + DOT_DIAMETR,y-DOT_DIAMETR/2,x+DOT_DIAMETR/2 -  DOT_DIAMETR,y+DOT_DIAMETR/2 ));
+          g2.draw(new Line2D.Float(x-DOT_DIAMETR/2,y-DOT_DIAMETR/2,x+DOT_DIAMETR/2,y+DOT_DIAMETR/2));
       }
       private void drawGrid(){
           Graphics2D g2 = (Graphics2D) graphics;

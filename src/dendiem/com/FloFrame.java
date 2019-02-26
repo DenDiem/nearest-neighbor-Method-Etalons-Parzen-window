@@ -9,13 +9,15 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class FloFrame extends JFrame{
-
+    static ArrayList<Dot> etalonArr = new ArrayList<>();
     static boolean dotAdd = true;
-    static boolean NN = true;
+
+    static int mode = 0;
     static int radius = 0;
     static int numofel = 0;
     static Dot currentDot = new Dot(0,0,1);
     static ArrayList<Dot> dotArr = new ArrayList<>();
+
     static ArrayList<MyClass> myClasses = new ArrayList<>();
     private JTextField eEnterX;
     private JLabel lEnterX;
@@ -32,13 +34,14 @@ public class FloFrame extends JFrame{
     private JLabel lRandom;
     private JTextField eRandom;
     private JCheckBox bAdds;
+    private JButton TESTButton;
     private DrawPanel drawPanel;
     private RightPanel rightPanel;
     static boolean grid = true;
 
     public FloFrame() {
 
-        setSize(875,800);
+        setSize(900,800);
         JPanel main = new JPanel();
         main.setLayout(new BorderLayout());
         JPanel panel = new JPanel();
@@ -52,6 +55,7 @@ public class FloFrame extends JFrame{
         setContentPane(main);
 
 
+
         bGenerate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -62,11 +66,13 @@ public class FloFrame extends JFrame{
                 Integer k = Integer.parseInt(eEnterK.getText());
                 currentDot = new Dot(x,y);
 
-                if(NN){
+                if(mode == 0){
                     progNN(currentDot,k);
-                }else{
+                }else if (mode == 1){
                     progParsen(currentDot,k);
 
+                }else{
+                    progEtalon(currentDot);
                 }
 
 
@@ -99,18 +105,26 @@ public class FloFrame extends JFrame{
         bSwitch.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(NN){
-                    NN=false;
-                    bSwitch.setText("Switch to NN");
-                    lEnteK.setText("Radius: ");
+                if(mode == 0){
+                    mode++;
+                    bSwitch.setText("Switch to Etalons");
+                    lEnteK.setText("R: ");
                     lProg.setText("Parsen Window");
+                    eEnterK.enable();
 
+                }else if (mode == 1){
+                    mode++;
+                    bSwitch.setText("Switch to NN");
+                    lEnteK.setText("none: ");
+                    eEnterK.disable();
+                    lProg.setText("Etalons Method");
+                    
                 }else{
-                    NN=true;
+                    mode = 0;
+                    eEnterK.enable();
                     bSwitch.setText("Switch to Parsen");
                     lEnteK.setText("K: ");
                     lProg.setText("Nearest Neighbor");
-                    
                 }
 
             }
@@ -118,6 +132,7 @@ public class FloFrame extends JFrame{
         generateRandomButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 Integer k = Integer.parseInt(eEnterK.getText());
                 Integer n = Integer.parseInt(eRandom.getText());
                 Random rand = new Random();
@@ -133,11 +148,13 @@ public class FloFrame extends JFrame{
                     copy.choiceClass();
 
                     currentDot = new Dot(x,y);
-                    if(NN){
+                    if(mode == 0){
                         progNN(currentDot,k);
-                    }else{
+                    }else if (mode == 1){
                         progParsen(currentDot,k);
 
+                    }else{
+                        progEtalon(currentDot);
                     }
                     if(copy.getdClass()==currentDot.getdClass())
                         ++right;
@@ -178,10 +195,110 @@ public class FloFrame extends JFrame{
                 dotAdd=!dotAdd;
             }
         });
+        TESTButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean rem = dotAdd;
+                ArrayList<Dot> copydotArr = new ArrayList<>(dotArr);
+                ArrayList<Dot> workarr = new ArrayList<>();
+                dotAdd = false;
+                int right = 0;
+                int best = 1;
+                Dot copy;
+                int bestright = 0;
+                int res = 0;
+                Dot curr,wcurr;
+                if(mode == 0){
+                   for(int i = 1; i < dotArr.size();i++){
+
+                       for (int j = 0; j < dotArr. size();++j  )
+                       {
+
+                           curr = dotArr.get(j);
+                           dotArr.remove(j);
+                           currentDot = new Dot(curr.getX(),curr.getY());
+                           copy =  new Dot(curr.getX(),curr.getY());
+                           copy.choiceClass();
+                           progNN(currentDot,i);
+                           if(copy.getdClass()==currentDot.getdClass())
+                               ++right;
+
+
+                           dotArr = new ArrayList<>(copydotArr);
+                       }
+                       if(right>bestright) {
+                           best = i;
+                           bestright = right;
+                       }
+                       right=0;
+                   }
+                    infoBox("TEST ON OWN, Right: " + bestright+"/"+dotArr.size()+"\n Best k: "+best,"[OutPut]");
+                }else if (mode == 1){
+                    for(int i = 1; i < 250;i+=1){
+                        for (int j = 0; j < dotArr. size();++j  )
+                        {
+                            curr = dotArr.get(j);
+                            dotArr.remove(j);
+                            currentDot = new Dot(curr.getX(),curr.getY());
+                            copy =  new Dot(curr.getX(),curr.getY());
+                            copy.choiceClass();
+                            progParsen(currentDot,i);
+                            if(copy.getdClass()==currentDot.getdClass())
+                                ++right;
+
+                        }
+                        dotArr = new ArrayList<>(copydotArr);
+                        if(right>bestright) {
+                            best = i;
+                            bestright = right;
+                        }
+                        right=0;
+                    }
+                    infoBox("TEST ON OWN, Right: " + bestright+"/"+dotArr.size()+"\n Best radius: " +best ,"[OutPut]");
+                }else{
+                    for (Dot dot:dotArr
+                    ) {
+                        currentDot = new Dot(dot.getX(),dot.getY());
+                        copy =  new Dot(dot.getX(),dot.getY());
+                        copy.choiceClass();
+                        progEtalon(currentDot);
+                        if(copy.getdClass()==currentDot.getdClass())
+                            ++right;
+
+                    }
+                   bestright = right;
+
+                infoBox("TEST ON OWN, Right: " + bestright+"/"+dotArr.size() ,"[OutPut]");
+                }
+
+                dotAdd = rem;
+            }
+        });
     }
     public static void infoBox(String infoMessage, String titleBar)
     {
         JOptionPane.showMessageDialog(null, infoMessage, "InfoBox: " + titleBar, JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void progEtalon(Dot currentDot){
+        for (MyClass mc:myClasses
+        ) {
+
+            mc.normalize();
+        }
+        numofel=0;
+        int j = 0;
+        for (Dot curr:etalonArr
+             ) {
+            curr.setDistance(Dot.distance(curr,currentDot));
+            myClasses.get(j).setJustWeight(1/curr.getDistance());
+            ++j;
+        }
+        etalonArr.sort((o1, o2) ->(int) (o1.getDistance()-o2.getDistance()));
+
+        currentDot.setdClass(etalonArr.get(0).getdClass());
+        if (dotAdd)
+            dotArr.add(currentDot);
     }
     private void progNN(Dot currentDot,int k){
         for (MyClass mc:myClasses
@@ -209,6 +326,7 @@ public class FloFrame extends JFrame{
 
         }
         choiseClassForDot();
+        currentDot.setdClass(FloFrame.currentDot.getdClass());
         if (dotAdd)
             dotArr.add(currentDot);
     }
@@ -244,6 +362,7 @@ public class FloFrame extends JFrame{
 
         }while (i<dotArr.size()&&curr.getDistance()<radius);
         choiseClassForDot();
+        currentDot.setdClass(FloFrame.currentDot.getdClass());
         if (dotAdd)
             dotArr.add(currentDot);
 

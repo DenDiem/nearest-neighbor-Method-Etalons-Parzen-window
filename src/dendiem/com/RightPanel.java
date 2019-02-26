@@ -36,7 +36,9 @@ public class RightPanel extends JPanel {
         MyClass mc;
         int y;
 
-        myClasses.sort((o1, o2) ->(int)(o2.getSumWeight()-o1.getSumWeight()));
+
+            myClasses.sort((o1, o2) ->(int)((o2.getSumWeight()*10000)-(o1.getSumWeight()*10000)));
+
 
 
         for(int i=0;i<9;++i){
